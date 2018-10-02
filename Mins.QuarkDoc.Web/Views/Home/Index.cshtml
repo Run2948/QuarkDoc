@@ -1,0 +1,301 @@
+﻿
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/png" href="../../Assets/Image/icon.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>
+        QuarkDoc
+    </title>
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+    <!-- CSS Files -->
+    <link href="~/Assets/Style/material-dashboard.min.css?v=2.0.2" rel="stylesheet" />
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+
+
+
+</head>
+<body class="off-canvas-sidebar">
+
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top text-white" id="navigation-example">
+        <div class="container">
+            <div class="navbar-wrapper">
+                <a class="navbar-brand" href="">Quark Doc</a>
+            </div>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation" data-target="#navigation-example">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="navbar-toggler-icon icon-bar"></span>
+                <span class="navbar-toggler-icon icon-bar"></span>
+                <span class="navbar-toggler-icon icon-bar"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end">
+                <ul class="navbar-nav">
+                    @{
+                        if (ViewData["OS_ISADMIN"].ToString() == "True")
+                        {
+                            <li class="nav-item">
+                                <a href="" class="nav-link" data-toggle="modal" data-target="#myModal">
+                                    <i class="material-icons">add</i>
+                                    新建项目
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/User" class="nav-link">
+                                    <i class="material-icons">people</i>
+                                    团队管理
+                                </a>
+                            </li>
+                        }
+                    }
+                    <li class="nav-item">
+                        <a href="/ResetPassword" class="nav-link">
+                            <i class="material-icons">lock_open</i>
+                            修改密码
+                        </a>
+
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Classic Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">新建项目</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <form id="NewApplicationForm" method="post" action="">
+                    <div class="modal-body">
+                        <p>
+                            允许新建多个项目目录、多个项目页面。QuarkDoc支持最多三层目录。
+                            可以用来做API文档、说明文档、数据字典等等。
+                        </p>
+                        <div class="form-group bmd-form-group is-filled">
+                            <div class="card-body ">
+                                <div class="form-group">
+                                    <label for="projectName" class="bmd-label-floating"> 项目名 *</label>
+                                    <input type="text" class="form-control" id="projectName" name="projectName" required="true" maxlength="20">
+                                </div>
+                                <div class="form-group">
+                                    <label for="description" class="bmd-label-floating"> 项目描述 *</label>
+                                    <input type="text" class="form-control" id="description" name="description" required="true" maxlength="100">
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-link">Lets Go</button>
+                        <button type="button" class="btn btn-danger btn-link" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+    <!--  End Modal -->
+    <!-- End Navbar -->
+    <div class="wrapper wrapper-full-page">
+        <div class="page-header login-page header-filter" filter-color="black" style="background-image: url('../../Assets/Image/bg-pricing.jpg'); background-size: cover; background-position: top center;">
+            <div class="container" id="applicationList">
+                <div class="row">
+                    <div v-for="entity in entities" class="col-lg-3 col-md-6">
+                        <div class="card card-pricing ">
+                            <h6 class="card-category"> {{ entity.User.UserName}}</h6>
+                            <div class="card-body">
+                                <div class="card-icon icon-rose ">
+                                    <i class="material-icons">code</i>
+                                </div>
+                                <h3 class="card-title">{{ getByteLen(entity.ProjectName)>12?getByteVal(entity.ProjectName,12)+'...':entity.ProjectName}}</h3>
+                                <p class="card-description">{{ getByteLen(entity.Description)>25?getByteVal(entity.Description,25)+'...':entity.Description}}</p>
+                            </div>
+                            <div class="card-footer justify-content-center ">
+                                <a v-bind:href="'/Document?pcode=' + entity.Id " class="btn btn-round btn-rose">Lest Go</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <br /><br /><br /><br />
+                <div class="row">
+                    <div class="col-xl-4">
+                        <button onclick="applicationTool.FindApplication(-1)" class="btn btn-round btn-rose">
+                            <span class="btn-label">
+                                <i class="material-icons">keyboard_arrow_left</i>
+                            </span>
+                            上一页
+                        </button>
+                    </div>
+                    <div class="col-xl-4" align="center">
+                        <button class="btn btn-round btn-rose">
+                            当前:<span>{{pageIndex}}</span>页.共:<span>{{pageCount}}</span>页
+                        </button>
+                    </div>
+                    <div class="col-xl-4">
+                        <button onclick="applicationTool.FindApplication(1)" class="btn btn-round btn-rose" style="float:right;">
+                            下一页
+                            <span class="btn-label">
+                                <i class="material-icons">keyboard_arrow_right</i>
+                            </span>
+
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--   Core JS Files   -->
+    <script src="~/Assets/Script/core/jquery.min.js" type="text/javascript"></script>
+    <script src="~/Assets/Script/core/popper.min.js" type="text/javascript"></script>
+    <script src="~/Assets/Script/core/bootstrap-material-design.min.js" type="text/javascript"></script>
+    <script src="~/Assets/Script/plugins/perfect-scrollbar.jquery.min.js"></script>
+    <!-- Plugin for the momentJs  -->
+    <script src="~/Assets/Script/plugins/moment.min.js"></script>
+    <!--  Plugin for Sweet Alert -->
+    <script src="~/Assets/Script/plugins/sweetalert2.js"></script>
+    <!-- Forms Validations Plugin -->
+    <script src="http://static.runoob.com/assets/jquery-validation-1.14.0/dist/jquery.validate.min.js"></script>
+    <script src="~/Assets/Script/plugins/messages_zh.js"></script>
+    <!--  Plugin for the Wizard, full documentation here: https://github.com/VinceG/twitter-bootstrap-wizard -->
+    <script src="~/Assets/Script/plugins/jquery.bootstrap-wizard.js"></script>
+    <!--	Plugin for Select, full documentation here: http://silviomoreto.github.io/bootstrap-select -->
+    <script src="~/Assets/Script/plugins/bootstrap-selectpicker.js"></script>
+    <!--  Plugin for the DateTimePicker, full documentation here: https://eonasdan.github.io/bootstrap-datetimepicker/ -->
+    <script src="~/Assets/Script/plugins/bootstrap-datetimepicker.min.js"></script>
+    <!--  DataTables.net Plugin, full documentation here: https://datatables.net/    -->
+    <script src="~/Assets/Script/plugins/jquery.dataTables.min.js"></script>
+    <!--	Plugin for Tags, full documentation here: https://github.com/bootstrap-tagsinput/bootstrap-tagsinputs  -->
+    <script src="~/Assets/Script/plugins/bootstrap-tagsinput.js"></script>
+    <!-- Plugin for Fileupload, full documentation here: http://www.jasny.net/bootstrap/javascript/#fileinput -->
+    <script src="~/Assets/Script/plugins/jasny-bootstrap.min.js"></script>
+    <!--  Full Calendar Plugin, full documentation here: https://github.com/fullcalendar/fullcalendar    -->
+    <script src="~/Assets/Script/plugins/fullcalendar.min.js"></script>
+    <!-- Vector Map plugin, full documentation here: http://jvectormap.com/documentation/ -->
+    <script src="~/Assets/Script/plugins/jquery-jvectormap.js"></script>
+    <!--  Plugin for the Sliders, full documentation here: http://refreshless.com/nouislider/ -->
+    <script src="~/Assets/Script/plugins/nouislider.min.js"></script>
+    <!-- Include a polyfill for ES6 Promises (optional) for IE11, UC Browser and Android browser support SweetAlert -->
+    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>*@
+    <script src="~/Assets/Script/core/core.js"></script>
+    <!-- Library for adding dinamically elements -->
+    <script src="~/Assets/Script/plugins/arrive.min.js"></script>
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <!-- Chartist JS -->
+    <script src="~/Assets/Script/plugins/chartist.min.js"></script>
+    <!--  Notifications Plugin    -->
+    <script src="~/Assets/Script/plugins/bootstrap-notify.js"></script>
+    <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+    <script src="~/Assets/Script/material-dashboard.min.js?v=2.0.2" type="text/javascript"></script>
+
+    <script src="~/Assets/Script/QDocFramework.js"></script>
+    <script src="https://cdn.bootcss.com/vue/2.2.2/vue.min.js"></script>
+
+    <script>
+                            var pageIndex = 1;
+                            var applicationTool = new Vue({
+                                el: '#applicationList',
+                                data: {
+                                    entities: [], pageCount: 1, pageIndex: 1
+                                },
+                                methods: {
+                                    FindApplication: function (index) {
+                                        var _self = this;
+                                        pageIndex = pageIndex + index;
+                                        if (pageIndex < 1)
+                                            pageIndex = 1;
+                                        if (pageIndex > _self.pageCount)
+                                            pageIndex = _self.pageCount;
+                                        _self.pageIndex = pageIndex;
+                                        $.ajax({
+                                            type: "POST",
+                                            url: "/Home/FindApplication",
+                                            data: { pageIndex: pageIndex },
+                                            success: function (result) {
+                                                _self.entities = $.parseJSON(result).entities;
+                                                _self.pageCount = $.parseJSON(result).pageCount;
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                            $(document).ready(function () {
+                                applicationTool.FindApplication(0);
+                                var validator = $("#NewApplicationForm").validate({
+                                    submitHandler: function () {
+                                        newApplication();
+                                    },
+                                    highlight: function (element) {
+                                        $(element).closest('.form-group').removeClass('has-success').addClass('has-danger');
+                                        $(element).closest('.form-check').removeClass('has-success').addClass('has-danger');
+                                    },
+                                    success: function (element) {
+                                        $(element).closest('.form-group').removeClass('has-danger').addClass('has-success');
+                                        $(element).closest('.form-check').removeClass('has-danger').addClass('has-success');
+                                    },
+                                    errorPlacement: function (error, element) {
+                                        $(element).append(error);
+                                    },
+                                });
+
+                            })
+                            function newApplication() {
+                                var projectName = $("input[name='projectName']").val()
+                                var description = $("input[name='description']").val()
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/Home/NewApplication",
+                                    data: { projectName: projectName, description: description },
+                                    success: function (result) {
+                                        if (result == "True") {
+                                            $.sw("success-message", "项目创建成功!", function () {
+                                                location.reload();
+                                            });
+                                        } else {
+                                            $.sw("error-message", "项目创建失败!", null);
+                                        }
+                                    }
+                                });
+                            };
+                            function getByteLen(val) {
+                                var len = 0;
+                                for (var i = 0; i < val.length; i++) {
+                                    if (val[i].match(/[^\x00-\xff]/ig) != null)
+                                        len += 2;
+                                    else
+                                        len += 1;
+                                }
+                                return len;
+                            }
+                            function getByteVal(val, max) {
+                                var returnValue = '';
+                                var byteValLen = 0;
+                                for (var i = 0; i < val.length; i++) {
+                                    if (val[i].match(/[^\x00-\xff]/ig) != null)
+                                        byteValLen += 2;
+                                    else
+                                        byteValLen += 1;
+                                    if (byteValLen > max)
+                                        break;
+                                    returnValue += val[i];
+                                }
+                                return returnValue;
+                            }
+
+
+
+    </script>
+</body>
+</html>

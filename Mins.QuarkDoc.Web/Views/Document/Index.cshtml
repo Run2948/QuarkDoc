@@ -1,0 +1,572 @@
+﻿
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/png" href="../../Assets/Image/icon.png">
+    <title>QuarkDoc</title>
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+    <!-- CSS Files -->
+    <link href="~/Assets/Style/material-dashboard.min.css" rel="stylesheet" />
+</head>
+<body class="">
+    <input type="hidden" id="pcode" value="@ViewData["pcode"]" />
+    <input type="hidden" id="code" value="@ViewData["code"]" />
+    <div class="wrapper ">
+        <div class="sidebar" data-color="rose" data-background-color="black" data-image="../../Assets/Image/sidebar-1.jpg">
+
+            <div class="logo">
+                <a href="" class="simple-text logo-mini">
+                </a>
+                <a href="" class="simple-text logo-normal">
+                    Quark Doc
+                </a>
+            </div>
+            <div class="sidebar-wrapper">
+                <div class="user">
+                    <div class="photo">
+                    </div>
+                    <div class="user-info">
+                        <a data-toggle="collapse" href="#collapseExample" class="">
+                            <span>
+                                @ViewData["projectName"]
+                                <b class="caret"></b>
+                            </span>
+                        </a>
+                        <div class="collapse" id="collapseExample">
+                            <ul class="nav">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/Document/DocumentEdit?pcode=@ViewData["pcode"]" onclick="documentEdit()">
+                                        <i class="material-icons">add</i>
+                                        <span class="sidebar-normal"> 新建文档</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="Application/CatalogEdit?pcode=@ViewData["pcode"]">
+                                        <i class="material-icons">edit</i>
+                                        <span class="sidebar-normal">管理目录</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="javascript:void(0)">
+                                        <span class="sidebar-mini">P</span>
+                                        <span class="sidebar-normal"> 项目设置 </span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <ul class="nav" id="directoriesDiv">
+                    @*跟目录文档渲染,DirectoryId=0*@
+                    <template v-for="withDoc in documents">
+                        <li class="nav-item" v-bind:id="withDoc.Id" v-if="withDoc.DirectoryId=='0'">
+                            <a class="nav-link" v-bind:href="'/Document?pcode='+withDoc.ApplicationId+'&code='+withDoc.Id">
+                                <i class="material-icons">content_paste</i>
+                                <p> {{withDoc.Title}} </p>
+                            </a>
+                        </li>
+                    </template>
+                    @*跟目录文件夹渲染,PID=0*@
+                    <template v-for="withDir in directories">
+                        <li class="nav-item " v-if="withDir.DirectoryId=='0'">
+                            <a class="nav-link" data-toggle="collapse" v-bind:href="'#' + withDir.Id ">
+                                <i class="material-icons">apps</i>
+                                <p>
+                                    {{withDir.Title}}
+                                    <b class="caret"></b>
+                                </p>
+                            </a>
+                            <div class="collapse" v-bind:id="withDir.Id">
+                                <ul class="nav">
+                                    @*二级目录文档渲染,PID=上级文件夹ID*@
+                                    <template v-for="towLiveDoc in documents">
+                                        <li class="nav-item " v-if="withDir.Id==towLiveDoc.DirectoryId" v-bind:id="towLiveDoc.Id">
+                                            <a class="nav-link" v-bind:href="'/Document?pcode='+towLiveDoc.ApplicationId+'&code='+towLiveDoc.Id">
+                                                <span class="sidebar-mini"> D </span>
+                                                <span class="sidebar-normal"> {{towLiveDoc.Title}} </span>
+                                            </a>
+                                        </li>
+                                    </template>
+                                    @*二级目录文件夹渲染,PID=上级文件夹ID*@
+                                    <template v-for="towLiveDir in directories">
+                                        <li class="nav-item" v-if="withDir.Id==towLiveDir.DirectoryId">
+                                            <a class="nav-link" data-toggle="collapse" v-bind:href="'#' + towLiveDir.Id ">
+                                                <span class="sidebar-mini"> F </span>
+                                                <span class="sidebar-normal">
+                                                    {{towLiveDir.Title}}
+                                                    <b class="caret"></b>
+                                                </span>
+
+                                            </a>
+                                            <div class="collapse" v-bind:id="towLiveDir.Id">
+                                                <ul class="nav">
+                                                    @*三级目录文档渲染,PID=上级文件夹ID*@
+                                                    <template v-for="threeLiveDoc in documents">
+                                                        <li class="nav-item" v-if="towLiveDir.Id==threeLiveDoc.DirectoryId" v-bind:id="threeLiveDoc.Id">
+                                                            <a class="nav-link" v-bind:href="'/Document?pcode='+threeLiveDoc.ApplicationId+'&code='+threeLiveDoc.Id">
+                                                                <span class="sidebar-mini"> D </span>
+                                                                <span class="sidebar-normal"> {{threeLiveDoc.Title}} </span>
+                                                            </a>
+                                                        </li>
+                                                    </template>
+                                                </ul>
+                                            </div>
+                                        </li>
+                                    </template>
+
+                                </ul>
+                            </div>
+                        </li>
+                    </template>
+                </ul>
+            </div>
+        </div>
+        <div class="main-panel">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top " id="navigation-example">
+                <div class="container-fluid">
+                    <div class="navbar-wrapper">
+                        <div class="navbar-minimize">
+                            <button id="minimizeSidebar" class="btn btn-just-icon btn-white btn-fab btn-round">
+                                <i class="material-icons text_align-center visible-on-sidebar-regular">more_vert</i>
+                                <i class="material-icons design_bullet-list-67 visible-on-sidebar-mini">view_list</i>
+                            </button>
+                        </div>
+
+                    </div>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation" data-target="#navigation-example">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="navbar-toggler-icon icon-bar"></span>
+                        <span class="navbar-toggler-icon icon-bar"></span>
+                        <span class="navbar-toggler-icon icon-bar"></span>
+                    </button>
+                    <div class="collapse navbar-collapse justify-content-end">
+                        <form class="navbar-form">
+                            <div class="input-group no-border">
+                                <input type="text" value="" class="form-control" placeholder="Search...">
+                                <button type="button" class="btn btn-white btn-round btn-just-icon">
+                                    <i class="material-icons">search</i>
+                                    <div class="ripple-container"></div>
+                                </button>
+                            </div>
+                        </form>
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Home">
+                                    <i class="material-icons">dashboard</i>
+                                    <p class="d-lg-none d-md-block">
+                                        Stats
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link" href="javascript:void(0)" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="material-icons">person</i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                                    <a class="dropdown-item" href="javascript:void(0)">修改密码</a>
+                                    <a class="dropdown-item" href="javascript:void(0)">重新登录 </a>
+                                    <a class="dropdown-item" href="javascript:void(0)">注销</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <!-- End Navbar -->
+            <div class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body ">
+                                    <div class="row">
+                                        <div class="col-sm-10">
+                                            <div class="card-header ">
+                                                <h3 class="card-title" id="title">
+                                                    <small class="description" id="createTime"></small>
+                                                </h3>
+                                            </div>
+                                            <div id="toolbar" style="display:none;">
+                                            </div>
+                                            <div id="context" class="card-header" max-height="900px">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <ul class="nav nav-pills  nav-pills-icons flex-column">
+                                                <li class="nav-item">
+                                                    <a class="nav-link" onclick="documentEdit()" href="javascript:void(0)">
+                                                        <i class="material-icons">edit</i> 编辑
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" href="javascript:void(0)">
+                                                        <i class="material-icons">schedule</i> 历史版本
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link " href="javascript:void(0)">
+                                                        <i class="material-icons">account_balance</i> 附件
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed-plugin">
+        <div class="dropdown show-dropdown">
+            <a href="#" data-toggle="dropdown">
+                <i class="fa fa-cog fa-2x"> </i>
+            </a>
+            <ul class="dropdown-menu">
+                <li class="header-title"> Sidebar Filters</li>
+                <li class="adjustments-line">
+                    <a href="javascript:void(0)" class="switch-trigger active-color">
+                        <div class="badge-colors ml-auto mr-auto">
+                            <span class="badge filter badge-purple" data-color="purple"></span>
+                            <span class="badge filter badge-azure" data-color="azure"></span>
+                            <span class="badge filter badge-green" data-color="green"></span>
+                            <span class="badge filter badge-warning" data-color="orange"></span>
+                            <span class="badge filter badge-danger" data-color="danger"></span>
+                            <span class="badge filter badge-rose active" data-color="rose"></span>
+                        </div>
+                        <div class="clearfix"></div>
+                    </a>
+                </li>
+                <li class="header-title">Sidebar Background</li>
+                <li class="adjustments-line">
+                    <a href="javascript:void(0)" class="switch-trigger background-color">
+                        <div class="ml-auto mr-auto">
+                            <span class="badge filter badge-black active" data-background-color="black"></span>
+                            <span class="badge filter badge-white" data-background-color="white"></span>
+                            <span class="badge filter badge-red" data-background-color="red"></span>
+                        </div>
+                        <div class="clearfix"></div>
+                    </a>
+                </li>
+
+                <li class="adjustments-line">
+                    <a href="javascript:void(0)" class="switch-trigger">
+                        <p>Sidebar Mini</p>
+                        <div class="ml-auto">
+                            <div class="togglebutton switch-sidebar-mini">
+                                <label>
+                                    <input type="checkbox">
+                                    <span class="toggle"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </a>
+                </li>
+
+                <li class="adjustments-line">
+                    <a href="javascript:void(0)" class="switch-trigger">
+                        <p>Sidebar Images</p>
+                        <div class="switch-mini ml-auto">
+                            <div class="togglebutton switch-sidebar-image">
+                                <label>
+                                    <input type="checkbox" checked="">
+                                    <span class="toggle"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </a>
+                </li>
+
+                <li class="header-title">Images</li>
+
+                <li class="active">
+                    <a class="img-holder switch-trigger" href="javascript:void(0)">
+                        <img src="~/Assets/Image/sidebar-1.jpg" alt="" />
+
+                    </a>
+                </li>
+                <li>
+                    <a class="img-holder switch-trigger" href="javascript:void(0)">
+                        <img src="~/Assets/Image/sidebar-2.jpg" alt="" />
+
+                    </a>
+                </li>
+                <li>
+                    <a class="img-holder switch-trigger" href="javascript:void(0)">
+                        <img src="~/Assets/Image/sidebar-3.jpg" alt="" />
+
+                    </a>
+                </li>
+                <li>
+                    <a class="img-holder switch-trigger" href="javascript:void(0)">
+                        <img src="~/Assets/Image/sidebar-4.jpg" alt="" />
+
+                    </a>
+                </li>
+                <li class="button-container">
+                    <a href="javascript:void(0)" target="_blank" class="btn btn-info btn-block">
+                        Get Free !
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!--   Core JS Files   -->
+    <script src="~/Assets/Script/core/jquery.min.js" type="text/javascript"></script>
+    <script src="~/Assets/Script/core/popper.min.js" type="text/javascript"></script>
+    <script src="~/Assets/Script/core/bootstrap-material-design.min.js" type="text/javascript"></script>
+    <script src="~/Assets/Script/plugins/perfect-scrollbar.jquery.min.js"></script>
+    <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+    <script src="~/Assets/Script/material-dashboard.min.js" type="text/javascript"></script>
+    <script src="~/Assets/Script/core/wangEditor.min.js"></script>
+    <script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $().ready(function () {
+                $sidebar = $('.sidebar');
+
+                $sidebar_img_container = $sidebar.find('.sidebar-background');
+
+                $full_page = $('.full-page');
+
+                $sidebar_responsive = $('body > .navbar-collapse');
+
+                window_width = $(window).width();
+
+                fixed_plugin_open = $('.sidebar .sidebar-wrapper .nav li.active a p').html();
+
+                if (window_width > 767 && fixed_plugin_open == 'Dashboard') {
+                    if ($('.fixed-plugin .dropdown').hasClass('show-dropdown')) {
+                        $('.fixed-plugin .dropdown').addClass('open');
+                    }
+
+                }
+                $('.fixed-plugin a').click(function (event) {
+                    // Alex if we click on switch, stop propagation of the event, so the dropdown will not be hide, otherwise we set the  section active
+                    if ($(this).hasClass('switch-trigger')) {
+                        if (event.stopPropagation) {
+                            event.stopPropagation();
+                        } else if (window.event) {
+                            window.event.cancelBubble = true;
+                        }
+                    }
+                });
+
+                $('.fixed-plugin .active-color span').click(function () {
+                    $full_page_background = $('.full-page-background');
+
+                    $(this).siblings().removeClass('active');
+                    $(this).addClass('active');
+
+                    var new_color = $(this).data('color');
+
+                    if ($sidebar.length != 0) {
+                        $sidebar.attr('data-color', new_color);
+                    }
+
+                    if ($full_page.length != 0) {
+                        $full_page.attr('filter-color', new_color);
+                    }
+
+                    if ($sidebar_responsive.length != 0) {
+                        $sidebar_responsive.attr('data-color', new_color);
+                    }
+                });
+
+                $('.fixed-plugin .background-color .badge').click(function () {
+                    $(this).siblings().removeClass('active');
+                    $(this).addClass('active');
+
+                    var new_color = $(this).data('background-color');
+
+                    if ($sidebar.length != 0) {
+                        $sidebar.attr('data-background-color', new_color);
+                    }
+                });
+
+                $('.fixed-plugin .img-holder').click(function () {
+                    $full_page_background = $('.full-page-background');
+
+                    $(this).parent('li').siblings().removeClass('active');
+                    $(this).parent('li').addClass('active');
+
+
+                    var new_image = $(this).find("img").attr('src');
+
+                    if ($sidebar_img_container.length != 0 && $('.switch-sidebar-image input:checked').length != 0) {
+                        $sidebar_img_container.fadeOut('fast', function () {
+                            $sidebar_img_container.css('background-image', 'url("' + new_image + '")');
+                            $sidebar_img_container.fadeIn('fast');
+                        });
+                    }
+
+                    if ($full_page_background.length != 0 && $('.switch-sidebar-image input:checked').length != 0) {
+                        var new_image_full_page = $('.fixed-plugin li.active .img-holder').find('img').data('src');
+
+                        $full_page_background.fadeOut('fast', function () {
+                            $full_page_background.css('background-image', 'url("' + new_image_full_page + '")');
+                            $full_page_background.fadeIn('fast');
+                        });
+                    }
+
+                    if ($('.switch-sidebar-image input:checked').length == 0) {
+                        var new_image = $('.fixed-plugin li.active .img-holder').find("img").attr('src');
+                        var new_image_full_page = $('.fixed-plugin li.active .img-holder').find('img').data('src');
+
+                        $sidebar_img_container.css('background-image', 'url("' + new_image + '")');
+                        $full_page_background.css('background-image', 'url("' + new_image_full_page + '")');
+                    }
+
+                    if ($sidebar_responsive.length != 0) {
+                        $sidebar_responsive.css('background-image', 'url("' + new_image + '")');
+                    }
+                });
+
+                $('.switch-sidebar-image input').change(function () {
+                    $full_page_background = $('.full-page-background');
+
+                    $input = $(this);
+
+                    if ($input.is(':checked')) {
+                        if ($sidebar_img_container.length != 0) {
+                            $sidebar_img_container.fadeIn('fast');
+                            $sidebar.attr('data-image', '#');
+                        }
+
+                        if ($full_page_background.length != 0) {
+                            $full_page_background.fadeIn('fast');
+                            $full_page.attr('data-image', '#');
+                        }
+
+                        background_image = true;
+                    } else {
+                        if ($sidebar_img_container.length != 0) {
+                            $sidebar.removeAttr('data-image');
+                            $sidebar_img_container.fadeOut('fast');
+                        }
+
+                        if ($full_page_background.length != 0) {
+                            $full_page.removeAttr('data-image', '#');
+                            $full_page_background.fadeOut('fast');
+                        }
+
+                        background_image = false;
+                    }
+                });
+
+                $('.switch-sidebar-mini input').change(function () {
+                    $body = $('body');
+
+                    $input = $(this);
+
+                    if (md.misc.sidebar_mini_active == true) {
+                        $('body').removeClass('sidebar-mini');
+                        md.misc.sidebar_mini_active = false;
+
+                        $('.sidebar .sidebar-wrapper, .main-panel').perfectScrollbar();
+
+                    } else {
+
+                        $('.sidebar .sidebar-wrapper, .main-panel').perfectScrollbar('destroy');
+
+                        setTimeout(function () {
+                            $('body').addClass('sidebar-mini');
+
+                            md.misc.sidebar_mini_active = true;
+                        }, 300);
+                    }
+
+                    // we simulate the window Resize so the charts will get updated in realtime.
+                    var simulateWindowResize = setInterval(function () {
+                        window.dispatchEvent(new Event('resize'));
+                    }, 180);
+
+                    // we stop the simulation of Window Resize after the animations are completed
+                    setTimeout(function () {
+                        clearInterval(simulateWindowResize);
+                    }, 1000);
+
+                });
+            });
+        });
+    </script>
+    <script>
+        var E = window.wangEditor
+        var editor = new E('#toolbar', '#context')
+        editor.create()
+        editor.$textElem.attr('contenteditable', false)
+        var vueObj = new Vue({
+            el: '#directoriesDiv',
+            data: {
+                directories: [], documents: []
+            }, methods: {
+                push: function () {
+                    this.$nextTick(function () { });
+                    this.$nextTick(function () {
+                        var code = $("#code").val();
+                        if (code != "null") {
+                            $.ajax({
+                                type: "POST",
+                                url: "/Document/FindDocument",
+                                data: { code: code },
+                                success: function (data) {
+                                    $("#" + data.documents.Id).addClass("active");
+
+                                    if (data.parentDocumentId != "0")
+                                        $("#" + data.parentDocumentId).addClass("show");
+                                    if (data.documents.DirectoryId != "0")
+                                        $("#" + data.documents.DirectoryId).addClass("show");
+
+
+
+                                    editor.txt.html(data.documents.Document);
+                                    $("#title").html(data.documents.Title);
+                                }
+                            });
+                        }
+                    });
+                },
+                Load: function () {
+                    var slft = this;
+                    var pcode = $("#pcode").val();
+                    var code = $("#code").val();
+                    $.ajax({
+                        type: "POST",
+                        url: "/Document/FindData",
+                        data: { pcode: pcode, code: code },
+                        success: function (result) {
+                            slft.directories = result.directories
+                            slft.documents = result.documents
+                        }
+                    });
+                    this.push();
+
+                }
+            }
+        });
+        $(document).ready(function () {
+            vueObj.Load();
+
+        });
+        function documentEdit() {
+            var pcode = $("#pcode").val();
+            var code = $("#code").val();
+            var url = "/Document/DocumentEdit?pcode=" + pcode;
+            if (code != "null")
+                url = url + "&code=" + code;
+            top.location = url;
+        }
+    </script>
+</body>
+</html>

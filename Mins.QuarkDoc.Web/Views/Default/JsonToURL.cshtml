@@ -1,0 +1,86 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" href="../../Assets/Image/icon.png">
+    <title>QuarkDoc</title>
+    <link href="~/Assets/Style/tools/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/Assets/Script/core/jquery.min.js"></script>
+
+
+    <style>
+        .navbar-brand, .navbar-nav > li > a {
+            color: #fdfdfd !important;
+        }
+
+            .navbar-nav > li > a:hover {
+                color: #ff8839 !important;
+            }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-fixed-top navbar-inverse" style="background-color:#2f3b53;">
+        <div class="container" style="width:100%">
+            <div class="navbar-header">
+                <a class="navbar-brand active" id="black1" href="JavaScript:void(0);">夜间模式</a>
+            </div>
+        </div>
+    </nav>
+    <script>
+        $("#black1").click(function () {
+            var s = $(this).html();
+            if (s == "夜间模式") {
+                $('body').css("background-color", "black");
+                $('body').css("opacity", "0.7")
+                $('body').css("-moz-opacity", "0.7")
+                $('body').css("filter", "alpha(opacity=50)")
+                $(this).html('白天模式');
+            } else {
+                $('body').css("background-color", "");
+                $('body').css("opacity", "")
+                $('body').css("-moz-opacity", "")
+                $('body').css("filter", "")
+                $(this).html('夜间模式');
+            }
+        });
+    </script>
+    <div class="container">
+        <div class="row row-offcanvas row-offcanvas-right main-contain">
+            <div style="margin-top:100px;">
+            </div>
+            <div class="col-xs-12 col-sm-9">
+                <h3>JSON参数转URL</h3>
+                <div>
+<textarea class="form-control" rows="5" id="ju">{"code":10,"data":"111","info":"参数错误"}</textarea>
+                </div>
+                <div style="margin-top:10px;">
+
+                    <div class="btn-group" role="group" aria-label="...">
+                        <button type="button" id="changeju" class="btn btn-primary codeurl">转换</button>
+                    </div>
+                </div>
+                <div style="margin-top:10px">
+<textarea class="form-control" rows="5" style="min-height:150px" id="disju"></textarea>
+                </div>
+                <script>
+                    $(document).ready(function () {
+                        $("#changeju").click(function () {
+                            var ju = $("#ju").val();
+                            $ret = ju.replace("{", "").replace("}", "").replace(/\",\"/g, "&").replace(/,\"/g, "&").replace(/:/g, "=").replace(/\":\"/g, "=").replace(/\"/g, "");
+                            $("#disju").val($ret);
+                        });
+
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

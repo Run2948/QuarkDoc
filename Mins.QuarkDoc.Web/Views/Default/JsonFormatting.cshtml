@@ -1,0 +1,68 @@
+﻿
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="icon" type="image/png" href="../../Assets/Image/icon.png">
+    <title>QuarkDoc</title>
+    <link href="~/Assets/Style/tools/parse_new.css" rel="stylesheet" />
+    <script src="~/Assets/Script/tools/Fjquery.min.js"></script>
+    <script src="~/Assets/Script/tools/parse_new.js"></script>
+</head>
+<body class="json-empty">
+    <div id="header" class="a">
+        <b style="margin-right: 30px;">JSON在线解析(<font color="red">双击自动格式化</font>)</b>
+        <div class="c">
+            <div class="n b">
+                <span class="l">选项</span><span class="m">▼</span>
+                <div class="j g h">
+                    <div class="e d on" id="yM">左右模式</div>
+                    <div class="e d" id="xL">上下模式</div>
+                    <div class="f"></div>
+                    <div class="e on" id="gV">解析JSON</div>
+                    <div class="e on" id="jY">执行JSON</div>
+                    <div class="f"></div>
+                    <div class="e" id="zN">压缩</div>
+                    <div class="e on" id="cR">着色</div>
+                    <div class="e" id="bQ">显示JS类型</div>
+                    <div class="e" id="aP">显示数组索引</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="split" class="N I" style="height: 894px; top: 41px;">
+        <textarea class="J x P" id="eT" spellcheck="false" style="height: 882px; width: 706px;"></textarea>
+        <div class="M ui-draggable" style="left: 738px;"></div>
+        <div class="K F color" id="fU" style="width: 1140px;">
+            <div class="y Q">
+                <div class="C A" id="hW" style="width: 561px;">准备就绪</div>
+                <div class="C B" id="kZ">&nbsp;</div>
+            </div>
+            <div class="z L" style="height: 855px;">
+                <div class="E" id="dS">
+                    <div class="C A" style="width: 561px; float: left;">
+                        <div class="w">
+                            <div class="P" id="iX"></div>
+                        </div>
+                    </div>
+                    <div class="C B" style="width: 560px;">
+                        <div class="w D">
+                            <div class="P" id="lA"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $("#eT").dblclick(function (e) {
+            jsonVal = jsl.format.formatJson($('#eT').val());
+            $('#eT').val(jsonVal);
+        })
+    </script>
+
+
+</body>
+</html>

@@ -1,0 +1,3 @@
+QuarkDoc遵循BSD许可。即：可以任意更改源码且闭源而无需放置我的任何版权说明，但不可引用我的任何相关信息用于软件的版权声明或广告促销等。
+
+注意：若使用本开源软件内的前端HTML部分请购买前端HTML正规许可（https://www.creative-tim.com/product/material-dashboard-pro/?affiliate_id=101249）

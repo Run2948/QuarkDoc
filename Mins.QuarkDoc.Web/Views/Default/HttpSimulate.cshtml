@@ -1,0 +1,123 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" href="../../Assets/Image/icon.png">
+    <title>QuarkDoc</title>
+    <link href="~/Assets/Style/tools/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/Assets/Script/core/jquery.min.js"></script>
+
+
+    <style>
+        .navbar-brand, .navbar-nav > li > a {
+            color: #fdfdfd !important;
+        }
+
+            .navbar-nav > li > a:hover {
+                color: #ff8839 !important;
+            }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-fixed-top navbar-inverse" style="background-color:#2f3b53;">
+        <div class="container" style="width:100%">
+            <div class="navbar-header">
+                <a class="navbar-brand active" id="black1" href="JavaScript:void(0);">夜间模式</a>
+            </div>
+        </div>
+    </nav>
+    <script>
+        $("#black1").click(function () {
+            var s = $(this).html();
+            if (s == "夜间模式") {
+                $('body').css("background-color", "black");
+                $('body').css("opacity", "0.7")
+                $('body').css("-moz-opacity", "0.7")
+                $('body').css("filter", "alpha(opacity=50)")
+                $(this).html('白天模式');
+            } else {
+                $('body').css("background-color", "");
+                $('body').css("opacity", "")
+                $('body').css("-moz-opacity", "")
+                $('body').css("filter", "")
+                $(this).html('夜间模式');
+            }
+        });
+    </script>
+    <div class="container">
+        <div class="row row-offcanvas row-offcanvas-right main-contain">
+            <div style="margin-top:100px;">
+            </div>
+            <div class="col-xs-12 col-sm-9">
+                <h3>模拟HTTP请求</h3>
+                <div style="margin-top:10px; ">
+                    <div class="btn-group col-xs-2" role="group" aria-label="...">
+                        <select id="methodType" class="form-control">
+                            <option value="GET">GET</option>
+                            <option value="POST">POST</option>
+                            <option value="DELETE">DELETE</option>
+                            <option value="PUT">PUT</option>
+                            <option value="HEAD">HEAD</option>
+                            <option value="CONNECT">CONNECT</option>
+                            <option value="OPTIONS">OPTIONS</option>
+                            <option value="TRACE">TRACE</option>
+                        </select>
+                    </div>
+                    <div class="btn-group col-xs-6" role="group" aria-label="...">
+                        <input type="text" class="form-control" id="url"
+                               placeholder="URL">
+                    </div>
+                    <div class="btn-group col-xs-4" role="group" aria-label="...">
+                        <input type="text" class="form-control" id="accoutToken"
+                               placeholder="accountToken">
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-9" style="margin-top:30px;">
+<textarea class="form-control" rows="10" id="requestText"></textarea>
+                <div style="margin-top:10px;">
+                    <div class="btn-group" role="group" aria-label="...">
+                        <button type="button" id="request" class="btn btn-primary codeurl">请求</button>
+                    </div>
+                </div>
+                <div style="margin-top:10px">
+<textarea class="form-control" rows="10" style="min-height:150px" id="responseText"></textarea>
+                </div>
+                <script>
+                    $(document).ready(function () {
+                        $("#request").click(function () {
+
+                            var methodType = $("#methodType").val();
+                            var url = $("#url").val();
+                            var requestText = $("#requestText").val();
+                            $.ajax({
+                                url: url,
+                                type: methodType,
+                                data: requestText,
+                                dataType: 'json',
+                                beforeSend: function (request) {
+                                    if (url.indexOf("login") == -1)
+                                        request.setRequestHeader("Authorization", "BasicAuth " + $("#token").val());
+                                },
+                                success: function (data) {
+                                    console.log(data);
+                                    $("#responseText").val(JSON.stringify(data));
+                                }
+                            });
+
+                        });
+
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

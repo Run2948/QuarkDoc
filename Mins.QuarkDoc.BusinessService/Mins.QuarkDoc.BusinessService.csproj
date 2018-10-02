@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8E21A1EB-3354-456D-B969-90E32E562824}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Mins.QuarkDoc.BusinessService</RootNamespace>
+    <AssemblyName>Mins.QuarkDoc.BusinessService</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Practices.Unity, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CommonAssembly\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.Configuration">
+      <HintPath>..\CommonAssembly\Microsoft.Practices.Unity.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ContainerManager.cs" />
+    <Compile Include="DbServiceBase.cs" />
+    <Compile Include="Document\ApplicationBusinessService.cs" />
+    <Compile Include="Document\DirectoriesBusinessService.cs" />
+    <Compile Include="Document\DocumentBusinessService.cs" />
+    <Compile Include="Permissions\UserBusinessService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Mins.QuarkDoc.DataEntities\Mins.QuarkDoc.DataEntities.csproj">
+      <Project>{5fcbe31a-7746-430e-9ae5-e6a4ec699a2b}</Project>
+      <Name>Mins.QuarkDoc.DataEntities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mins.QuarkDoc.DataProvider\Mins.QuarkDoc.DataProvider.csproj">
+      <Project>{69faa263-2d44-4816-a498-744ef62cf150}</Project>
+      <Name>Mins.QuarkDoc.DataProvider</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mins.QuarkDoc.Framework\Mins.QuarkDoc.Framework.csproj">
+      <Project>{922704fd-b940-42be-afe6-2c3c2cab143a}</Project>
+      <Name>Mins.QuarkDoc.Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mins.QuarkDoc.Sino.DataInterface\Mins.QuarkDoc.DataInterface.csproj">
+      <Project>{63a7ff9f-6b5f-4d57-a8e0-cd0e986a15d1}</Project>
+      <Name>Mins.QuarkDoc.DataInterface</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
